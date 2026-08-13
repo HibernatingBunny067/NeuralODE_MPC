@@ -3,7 +3,7 @@ logs/
 animations/
 *.DS_Store
 .DS_Store
-
+/validation_results
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
