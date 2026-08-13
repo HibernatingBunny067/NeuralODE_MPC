@@ -1,0 +1,5 @@
+*.csv
+logs/
+animations/
+*.DS_Store
+.DS_Store
