@@ -5,8 +5,8 @@ import os
 import argparse
 import gc
 import csv
-from pathlib import Path
 from datetime import datetime
+import pandas as pd 
 
 parser = argparse.ArgumentParser(description="Monte-Carlo Validation of NODE-MPC")
 parser.add_argument(
@@ -23,7 +23,7 @@ nCases:int = args.nCases
 experiments = [
     {"integrator_system":"euler","dt_system":0.01,"integrator_mpc":"euler","dt_mpc":0.01},
     {"integrator_system":"rk2","dt_system":0.01,"integrator_mpc":"rk2","dt_mpc":0.01},
-    # {"integrator_system":"rk4","dt_system":0.01,"integrator_mpc":"rk4","dt_mpc":0.01}
+    {"integrator_system":"rk4","dt_system":0.01,"integrator_mpc":"rk4","dt_mpc":0.01}
 ]
 
 sampler = InitialSampler()
@@ -136,8 +136,8 @@ with open(
             )
 
             Q = np.diag([
-                275.0,
-                250.0,
+                200.0,
+                275.0, #penalizing velocity more to avoid overshoot 
                 100.0,
                 150.0
             ])
@@ -300,11 +300,9 @@ with open(
 
             del obj
             gc.collect()
-
-import pandas as pd
+ 
 
 results = pd.read_csv(csv_path)
-
 results["label"] = (
     results["integrator_system"].str.upper()
     + "\n"
@@ -317,6 +315,7 @@ results["label"] = (
 
 fig, ax = plt.subplots(figsize=(10, 6))
 
+labels = results['label'].unique()
 box_data = [
     results.loc[
         results["label"] == label,
@@ -344,7 +343,7 @@ plt.savefig(
     dpi=300
 )
 
-plt.show()
+
 
 fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -375,7 +374,7 @@ plt.savefig(
     dpi=300
 )
 
-plt.show()
+
 
 fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -406,7 +405,7 @@ plt.savefig(
     dpi=300
 )
 
-plt.show()
+
 
 fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -437,4 +436,4 @@ plt.savefig(
     dpi=300
 )
 
-plt.show()
+print(f"SIMULATED Ended, stored results in validation_results/{ts}")
